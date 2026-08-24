@@ -22,6 +22,12 @@ L'application est ensuite disponible à l'adresse
 > Le dépôt fonctionne aussi tel quel avec l'option « Deploy from a branch », puisque
 > tous les chemins sont relatifs et qu'un fichier `.nojekyll` est présent.
 
+**Branche de publication.** Le dépôt ayant été créé vide, GitHub a fait de la branche
+de développement la branche par défaut. Le workflow se déclenche donc sur `main`,
+`master` **et** cette branche. Si vous en utilisez une autre, ajoutez-la à la liste
+`branches:` de `.github/workflows/pages.yml`, faute de quoi la publication ne partira
+jamais.
+
 ### En local
 
 Ouvrir `index.html` directement dans le navigateur suffit (les scripts sont chargés en

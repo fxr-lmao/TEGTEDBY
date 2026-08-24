@@ -2,7 +2,13 @@ name: Déploiement GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # Le dépôt ayant été créé vide, la branche par défaut est celle de ce
+    # travail. On couvre donc aussi les noms usuels : si vous renommez ou
+    # fusionnez plus tard, la publication continue de se déclencher.
+    branches:
+      - main
+      - master
+      - claude/great-gauss-i2xyw0
   workflow_dispatch:
 
 permissions:
