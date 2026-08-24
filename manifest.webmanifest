@@ -1,0 +1,16 @@
+{
+  "name": "Canardo — habitudes et humeur",
+  "short_name": "Canardo",
+  "description": "Un compagnon canard dont l'humeur suit vos tâches et vos habitudes.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8EC",
+  "theme_color": "#FFF8EC",
+  "lang": "fr",
+  "icons": [
+    { "src": "assets/icons/duck.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icons/duck.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

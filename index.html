@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Canardo — vos habitudes, son humeur</title>
+<meta name="description" content="Un compagnon canard dont l'humeur évolue selon vos tâches et vos habitudes. Tout est sauvegardé automatiquement dans votre navigateur.">
+<meta name="theme-color" content="#FFF8EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161F" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/icons/duck.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/duck.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true" class="brand-mark">
+      <circle cx="16" cy="16" r="15" fill="#FFC93C"/>
+      <circle cx="13" cy="13" r="3.2" fill="#2B2119"/>
+      <path d="M19 15 L30 17 L19 20 Z" fill="#F0821E"/>
+    </svg>
+    <span>Canardo</span>
+  </div>
+  <div class="topbar-actions">
+    <span id="saveState" class="save-state" role="status" aria-live="polite">Prêt</span>
+    <button id="themeBtn" class="icon-btn" type="button" title="Changer de thème" aria-label="Changer de thème">🌗</button>
+    <button id="menuBtn" class="icon-btn" type="button" title="Réglages et sauvegarde" aria-label="Réglages et sauvegarde">⚙️</button>
+  </div>
+</header>
+
+<main id="main" class="layout">
+
+  <!-- ============== SCÈNE DU CANARD ============== -->
+  <section class="stage card" aria-labelledby="duckName">
+    <div class="stage-scene">
+      <svg id="duck" viewBox="0 0 400 400" role="img" aria-labelledby="duckTitle duckDesc">
+        <title id="duckTitle">Votre canard</title>
+        <desc id="duckDesc">L'expression du canard reflète votre progression du moment.</desc>
+
+        <defs>
+          <radialGradient id="gBody" cx="34%" cy="26%" r="78%">
+            <stop offset="0%" stop-color="var(--duck-light)"/>
+            <stop offset="72%" stop-color="var(--duck-base)"/>
+            <stop offset="100%" stop-color="var(--duck-dark)"/>
+          </radialGradient>
+          <linearGradient id="gWing" x1="0.2" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stop-color="var(--duck-base)"/>
+            <stop offset="100%" stop-color="var(--duck-dark)"/>
+          </linearGradient>
+          <linearGradient id="gBeak" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFB03B"/>
+            <stop offset="100%" stop-color="#EF7C15"/>
+          </linearGradient>
+          <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--pond-top)"/>
+            <stop offset="100%" stop-color="var(--pond-bottom)"/>
+          </linearGradient>
+          <radialGradient id="gAura" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--duck-base)" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="var(--duck-base)" stop-opacity="0"/>
+          </radialGradient>
+          <clipPath id="clipEyeL"><ellipse cx="226" cy="140" rx="17" ry="18"/></clipPath>
+          <clipPath id="clipEyeR"><ellipse cx="280" cy="146" rx="14" ry="15"/></clipPath>
+        </defs>
+
+        <!-- halo de bonheur -->
+        <circle id="aura" cx="200" cy="230" r="180" fill="url(#gAura)" opacity="0"/>
+
+        <!-- petit nuage de pluie (humeur basse) -->
+        <g id="rain" opacity="0">
+          <path d="M60 78 a26 26 0 0 1 50-9 a22 22 0 0 1 40 12 a20 20 0 0 1-6 39 H74 a22 22 0 0 1-14-42 Z" fill="var(--cloud)"/>
+          <g fill="var(--pond-top)">
+            <path class="drop d1" d="M84 124 q6 10 0 14 q-6-4 0-14 Z"/>
+            <path class="drop d2" d="M112 124 q6 10 0 14 q-6-4 0-14 Z"/>
+            <path class="drop d3" d="M140 124 q6 10 0 14 q-6-4 0-14 Z"/>
+          </g>
+        </g>
+
+        <!-- étincelles (humeur haute) -->
+        <g id="sparks" opacity="0" fill="var(--spark)">
+          <path class="spark s1" d="M96 118 l6 16 16 6 -16 6 -6 16 -6-16 -16-6 16-6 Z"/>
+          <path class="spark s2" d="M336 96 l4.5 12 12 4.5 -12 4.5 -4.5 12 -4.5-12 -12-4.5 12-4.5 Z"/>
+          <path class="spark s3" d="M352 236 l4 11 11 4 -11 4 -4 11 -4-11 -11-4 11-4 Z"/>
+          <path class="spark s4" d="M52 236 l3.5 9 9 3.5 -9 3.5 -3.5 9 -3.5-9 -9-3.5 9-3.5 Z"/>
+        </g>
+
+        <!-- le canard flottant -->
+        <g id="float" class="float">
+          <!-- queue -->
+          <path d="M104 232 C70 210 44 199 28 208 C43 224 43 245 30 259 C51 270 84 264 110 274 Z" fill="url(#gBody)"/>
+          <!-- corps -->
+          <ellipse cx="190" cy="278" rx="122" ry="84" fill="url(#gBody)"/>
+          <!-- aile -->
+          <g id="wing" class="wing">
+            <path d="M264 266 C250 238 202 226 158 242 C122 256 100 280 92 300
+                     C132 294 156 298 190 298 C232 298 256 288 264 266 Z"
+                  fill="url(#gWing)" stroke="var(--duck-dark)" stroke-width="2.5"
+                  stroke-linejoin="round" opacity=".9"/>
+            <path d="M104 295 C132 288 158 288 180 291" fill="none" stroke="var(--duck-dark)"
+                  stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+            <path d="M118 284 C142 277 164 277 184 281" fill="none" stroke="var(--duck-dark)"
+                  stroke-width="2.5" stroke-linecap="round" opacity=".32"/>
+          </g>
+
+          <!-- tête + visage -->
+          <g id="headGroup" class="head-group">
+            <circle cx="252" cy="152" r="72" fill="url(#gBody)"/>
+
+            <!-- rougeurs -->
+            <g id="blush" opacity="0" fill="var(--blush)">
+              <ellipse cx="212" cy="172" rx="17" ry="10"/>
+              <ellipse cx="296" cy="176" rx="13" ry="8"/>
+            </g>
+
+            <!-- sourcils -->
+            <path id="browL" class="brow" d="M208 110 Q227 101 246 110" fill="none" stroke="var(--ink-duck)" stroke-width="5.5" stroke-linecap="round"/>
+            <path id="browR" class="brow" d="M264 116 Q280 108 296 116" fill="none" stroke="var(--ink-duck)" stroke-width="4.5" stroke-linecap="round"/>
+
+            <!-- oeil gauche -->
+            <g id="eyeL">
+              <ellipse cx="226" cy="140" rx="17" ry="18" fill="#FFFFFF"/>
+              <circle id="pupilL" cx="228" cy="142" r="8" fill="var(--ink-duck)"/>
+              <circle cx="232" cy="137" r="3.2" fill="#FFFFFF"/>
+              <g clip-path="url(#clipEyeL)">
+                <ellipse id="lidL" cx="226" cy="106" rx="20" ry="20" fill="url(#gBody)"/>
+              </g>
+            </g>
+            <!-- oeil droit -->
+            <g id="eyeR">
+              <ellipse cx="280" cy="146" rx="14" ry="15" fill="#FFFFFF"/>
+              <circle id="pupilR" cx="282" cy="148" r="6.8" fill="var(--ink-duck)"/>
+              <circle cx="285" cy="143" r="2.6" fill="#FFFFFF"/>
+              <g clip-path="url(#clipEyeR)">
+                <ellipse id="lidR" cx="280" cy="114" rx="17" ry="17" fill="url(#gBody)"/>
+              </g>
+            </g>
+
+            <!-- yeux "^ ^" de joie extrême -->
+            <g id="eyesHappy" opacity="0" fill="none" stroke="var(--ink-duck)" stroke-width="6" stroke-linecap="round">
+              <path d="M212 146 Q226 128 240 146"/>
+              <path d="M269 152 Q280 137 291 152"/>
+            </g>
+
+            <!-- larmes -->
+            <g id="tears" opacity="0" fill="var(--tear)">
+              <path class="tear t1" d="M220 158 q7 13 0 18 q-7-5 0-18 Z"/>
+              <path class="tear t2" d="M276 164 q6 11 0 15 q-6-4 0-15 Z"/>
+            </g>
+
+            <!-- bec -->
+            <g id="beak" class="beak">
+              <!-- Intérieur du bec : même tracé que la mandibule inférieure.
+                   Elle glisse vers le bas, ce qu'elle libère est donc rempli
+                   exactement, et rien ne dépasse quand le bec est fermé. -->
+              <path id="mouth" d="M298 183 L375 178 C361 195 329 200 298 193 Z" fill="#B8433A"/>
+              <path id="beakUpper" d="M298 158 C330 150 362 159 375 178 L298 183 Z" fill="url(#gBeak)"/>
+              <path id="beakLower" d="M298 183 L375 178 C361 195 329 200 298 193 Z" fill="#E0710F"/>
+              <circle cx="322" cy="167" r="3.4" fill="#A9530A" opacity=".7"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- eau -->
+        <g id="pond">
+          <ellipse cx="190" cy="346" rx="178" ry="30" fill="url(#gWater)"/>
+          <ellipse class="ripple r1" cx="190" cy="346" rx="120" ry="20" fill="none" stroke="var(--ripple)" stroke-width="3"/>
+          <ellipse class="ripple r2" cx="190" cy="346" rx="120" ry="20" fill="none" stroke="var(--ripple)" stroke-width="3"/>
+        </g>
+
+        <!-- coeurs (caresses) -->
+        <g id="hearts"></g>
+      </svg>
+
+      <button id="petBtn" class="pet-hit" type="button" aria-label="Caresser le canard">
+        <span class="pet-hint" id="petHint">Caressez-le</span>
+      </button>
+    </div>
+
+    <div class="stage-info">
+      <h1 id="duckName" class="duck-name">Canardo</h1>
+      <p class="mood-line"><span id="moodEmoji" aria-hidden="true">🙂</span> <strong id="moodLabel">Content</strong></p>
+      <div class="moodbar" role="meter" id="moodMeter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" aria-label="Humeur du canard">
+        <i id="moodFill"></i>
+      </div>
+      <p id="moodHint" class="mood-hint">Il flotte tranquillement.</p>
+    </div>
+
+    <div class="chips">
+      <div class="chip"><b id="statStreak">0</b><span>jours de suite</span></div>
+      <div class="chip"><b id="statToday">0/0</b><span>aujourd'hui</span></div>
+      <div class="chip"><b id="statDone">0</b><span>terminées</span></div>
+    </div>
+  </section>
+
+  <!-- ============== CONTENU ============== -->
+  <div class="content">
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab is-active" role="tab" aria-selected="true"  aria-controls="panel-today"  id="tab-today"  data-panel="today">Aujourd'hui</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="panel-habits" id="tab-habits" data-panel="habits">Habitudes</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="panel-tasks"  id="tab-tasks"  data-panel="tasks">Tâches</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="panel-stats"  id="tab-stats"  data-panel="stats">Progrès</button>
+    </nav>
+
+    <!-- AUJOURD'HUI -->
+    <section class="panel is-active card" id="panel-today" role="tabpanel" aria-labelledby="tab-today">
+      <header class="panel-head">
+        <h2>Aujourd'hui</h2>
+        <p id="todayDate" class="muted"></p>
+      </header>
+
+      <form id="quickForm" class="quick-add" autocomplete="off">
+        <input id="quickInput" type="text" placeholder="Ajouter une tâche pour aujourd'hui…" aria-label="Nouvelle tâche" maxlength="120">
+        <button class="btn btn-primary" type="submit">Ajouter</button>
+      </form>
+
+      <h3 class="sub">Habitudes du jour</h3>
+      <ul id="todayHabits" class="list"></ul>
+      <p id="todayHabitsEmpty" class="empty">Aucune habitude prévue aujourd'hui. <button class="link" type="button" data-goto="habits">En créer une</button>.</p>
+
+      <h3 class="sub">Tâches</h3>
+      <ul id="todayTasks" class="list"></ul>
+      <p id="todayTasksEmpty" class="empty">Rien à faire pour le moment. Le canard se repose.</p>
+
+      <div id="allDone" class="alldone" hidden>
+        <span aria-hidden="true">🎉</span>
+        <p><strong>Tout est fait !</strong> Votre canard est aux anges.</p>
+      </div>
+    </section>
+
+    <!-- HABITUDES -->
+    <section class="panel card" id="panel-habits" role="tabpanel" aria-labelledby="tab-habits" hidden>
+      <header class="panel-head">
+        <h2>Habitudes</h2>
+        <p class="muted">Les habitudes reviennent aux jours choisis. En manquer une attriste le canard.</p>
+      </header>
+
+      <form id="habitForm" class="form-card" autocomplete="off">
+        <div class="row">
+          <input id="habitTitle" type="text" placeholder="Ex. Boire 1,5 L d'eau" aria-label="Nom de l'habitude" maxlength="80" required>
+          <input id="habitIcon" type="text" placeholder="💧" aria-label="Emoji" maxlength="4" class="icon-input">
+        </div>
+        <fieldset class="days">
+          <legend class="sr-only">Jours de la semaine</legend>
+          <label><input type="checkbox" class="day" value="1" checked><span>L</span></label>
+          <label><input type="checkbox" class="day" value="2" checked><span>M</span></label>
+          <label><input type="checkbox" class="day" value="3" checked><span>M</span></label>
+          <label><input type="checkbox" class="day" value="4" checked><span>J</span></label>
+          <label><input type="checkbox" class="day" value="5" checked><span>V</span></label>
+          <label><input type="checkbox" class="day" value="6" checked><span>S</span></label>
+          <label><input type="checkbox" class="day" value="0" checked><span>D</span></label>
+        </fieldset>
+        <button class="btn btn-primary" type="submit">Créer l'habitude</button>
+      </form>
+
+      <ul id="habitList" class="list"></ul>
+      <p id="habitEmpty" class="empty">Aucune habitude pour l'instant.</p>
+    </section>
+
+    <!-- TÂCHES -->
+    <section class="panel card" id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
+      <header class="panel-head">
+        <h2>Tâches</h2>
+        <p class="muted">Ponctuelles. Une tâche en retard pèse un peu sur le moral.</p>
+      </header>
+
+      <form id="taskForm" class="form-card" autocomplete="off">
+        <input id="taskTitle" type="text" placeholder="Ex. Répondre au courriel de Marie" aria-label="Nom de la tâche" maxlength="120" required>
+        <div class="row">
+          <label class="field">
+            <span>Échéance</span>
+            <input id="taskDue" type="date" aria-label="Échéance">
+          </label>
+          <label class="field">
+            <span>Priorité</span>
+            <select id="taskPriority" aria-label="Priorité">
+              <option value="1">Basse</option>
+              <option value="2" selected>Normale</option>
+              <option value="3">Haute</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Ajouter la tâche</button>
+      </form>
+
+      <div class="filters" role="group" aria-label="Filtre des tâches">
+        <button class="pill is-active" type="button" data-filter="open">À faire</button>
+        <button class="pill" type="button" data-filter="done">Terminées</button>
+        <button class="pill" type="button" data-filter="all">Toutes</button>
+      </div>
+
+      <ul id="taskList" class="list"></ul>
+      <p id="taskEmpty" class="empty">Aucune tâche ici.</p>
+    </section>
+
+    <!-- PROGRÈS -->
+    <section class="panel card" id="panel-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
+      <header class="panel-head">
+        <h2>Progrès</h2>
+        <p class="muted">L'humeur du canard, jour après jour.</p>
+      </header>
+
+      <div class="stat-grid">
+        <div class="stat"><b id="kpiMood">—</b><span>humeur</span></div>
+        <div class="stat"><b id="kpiStreak">—</b><span>série actuelle</span></div>
+        <div class="stat"><b id="kpiBest">—</b><span>meilleure série</span></div>
+        <div class="stat"><b id="kpiRate">—</b><span>réussite 7 j</span></div>
+      </div>
+
+      <h3 class="sub">Humeur sur 30 jours</h3>
+      <div class="chart-wrap">
+        <svg id="moodChart" viewBox="0 0 600 180" role="img" aria-label="Graphique de l&rsquo;humeur sur 30 jours"></svg>
+      </div>
+
+      <h3 class="sub">Habitudes — 7 derniers jours</h3>
+      <div class="grid-wrap">
+        <table id="habitGrid" class="habit-grid"></table>
+      </div>
+      <p id="statsEmpty" class="empty">Créez des habitudes pour voir votre progression ici.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">
+  <p>Vos données restent dans ce navigateur. Pensez à exporter une sauvegarde de temps en temps.</p>
+</footer>
+
+<!-- ============== DIALOGUES ============== -->
+<dialog id="menuDialog" class="dialog">
+  <form method="dialog" class="dialog-head">
+    <h2>Réglages</h2>
+    <button class="icon-btn" value="close" aria-label="Fermer">✕</button>
+  </form>
+
+  <div class="dialog-body">
+    <label class="field">
+      <span>Nom du canard</span>
+      <input id="setName" type="text" maxlength="24" placeholder="Canardo">
+    </label>
+
+    <div class="field">
+      <span>Couleur</span>
+      <div id="colorRow" class="color-row" role="group" aria-label="Couleur du canard"></div>
+    </div>
+
+    <div class="field">
+      <span>Thème</span>
+      <div class="seg" role="group" aria-label="Thème">
+        <button type="button" class="seg-btn" data-theme="auto">Auto</button>
+        <button type="button" class="seg-btn" data-theme="light">Clair</button>
+        <button type="button" class="seg-btn" data-theme="dark">Sombre</button>
+      </div>
+    </div>
+
+    <label class="switch">
+      <input id="setMotion" type="checkbox">
+      <span>Réduire les animations</span>
+    </label>
+
+    <hr>
+
+    <h3 class="sub">Sauvegarde</h3>
+    <p class="muted small">L'application enregistre automatiquement après chaque action. Exportez un fichier pour conserver vos données ou changer d'appareil.</p>
+    <div class="btn-row">
+      <button id="exportBtn" class="btn" type="button">Exporter (.json)</button>
+      <button id="copyBtn" class="btn" type="button">Copier la sauvegarde</button>
+      <button id="importBtn" class="btn" type="button">Importer…</button>
+      <input id="importFile" type="file" accept="application/json,.json" hidden>
+    </div>
+    <p id="backupInfo" class="muted small"></p>
+
+    <hr>
+    <button id="resetBtn" class="btn btn-danger" type="button">Tout réinitialiser</button>
+  </div>
+</dialog>
+
+<dialog id="welcomeDialog" class="dialog">
+  <div class="dialog-body welcome">
+    <div class="welcome-duck" aria-hidden="true">🐣</div>
+    <h2>Un canard vient d'éclore</h2>
+    <p class="muted">Son humeur suivra vos habitudes et vos tâches. Donnez-lui un nom.</p>
+    <label class="field">
+      <span>Son nom</span>
+      <input id="welcomeName" type="text" maxlength="24" placeholder="Canardo" value="Canardo">
+    </label>
+    <div class="field">
+      <span>Sa couleur</span>
+      <div id="welcomeColors" class="color-row" role="group" aria-label="Couleur du canard"></div>
+    </div>
+    <label class="switch">
+      <input id="welcomeSeed" type="checkbox" checked>
+      <span>Ajouter 3 habitudes d'exemple</span>
+    </label>
+    <button id="welcomeGo" class="btn btn-primary btn-block" type="button">Commencer</button>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/duck.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
