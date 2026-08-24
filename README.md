@@ -12,9 +12,15 @@ une feuille de style et une page HTML.
 
 ## Mise en ligne
 
-1. **Réglages → Pages** du dépôt.
+> **Une action manuelle est indispensable au préalable.** Le workflow ne peut pas
+> activer Pages lui-même : le jeton fourni aux actions n'en a pas le droit
+> (`Resource not accessible by integration`). Tant que le réglage n'est pas fait,
+> chaque exécution échoue sur `Get Pages site failed`.
+
+1. Ouvrir **Settings → Pages** du dépôt.
 2. Dans **Source**, choisir **GitHub Actions**.
-3. Pousser sur `main` : le workflow `.github/workflows/pages.yml` publie le site.
+3. Relancer le workflow : onglet **Actions** → *Déploiement GitHub Pages* →
+   **Run workflow**. Les poussées suivantes publient automatiquement.
 
 L'application est ensuite disponible à l'adresse
 `https://<utilisateur>.github.io/<dépôt>/`.
