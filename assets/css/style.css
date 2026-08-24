@@ -21,20 +21,20 @@
   --radius:20px;
   --radius-sm:12px;
 
-  /* scène */
-  --pond-top:#8FD6F0;
-  --pond-bottom:#4FB4DC;
-  --ripple:rgba(255,255,255,.7);
-  --cloud:#B9C3D0;
+  /* scène — aplats et contours épais, style autocollant */
+  --ink-line:#1C1713;
+  --pond:#5FC5EA;
+  --ripple:rgba(255,255,255,.85);
+  --cloud:#CBD5E0;
   --blush:#FF8FA6;
   --tear:#7FD3F5;
-  --spark:#FFE06A;
-  --ink-duck:#3A2C1E;
+  --spark:#FFD52E;
+  --beak:#FF9E1B;
+  --beak-dark:#F07C10;
+  --beak-line:#B85A08;
 
   /* couleur du canard, réécrite par JS */
   --duck-base:#FFC93C;
-  --duck-light:#FFE28A;
-  --duck-dark:#E0A016;
 
   --stage-sky-1:#FFF3D6;
   --stage-sky-2:#DDF3FA;
@@ -55,12 +55,11 @@ html[data-theme="dark"]{
   --bad:#F0705A;
   --shadow:0 12px 34px rgba(0,0,0,.45);
   --shadow-sm:0 3px 12px rgba(0,0,0,.35);
-  --pond-top:#2C6C8C;
-  --pond-bottom:#1B4459;
-  --ripple:rgba(255,255,255,.35);
-  --cloud:#4A5468;
-  --stage-sky-1:#232838;
-  --stage-sky-2:#1B2A38;
+  --pond:#4EA8CE;
+  --ripple:rgba(255,255,255,.7);
+  --cloud:#9FB0C4;
+  --stage-sky-1:#5C6A85;
+  --stage-sky-2:#456478;
 }
 
 @media (prefers-color-scheme: dark){
@@ -79,12 +78,11 @@ html[data-theme="dark"]{
     --bad:#F0705A;
     --shadow:0 12px 34px rgba(0,0,0,.45);
     --shadow-sm:0 3px 12px rgba(0,0,0,.35);
-    --pond-top:#2C6C8C;
-    --pond-bottom:#1B4459;
-    --ripple:rgba(255,255,255,.35);
-    --cloud:#4A5468;
-    --stage-sky-1:#232838;
-    --stage-sky-2:#1B2A38;
+    --pond:#4EA8CE;
+    --ripple:rgba(255,255,255,.7);
+    --cloud:#9FB0C4;
+    --stage-sky-1:#5C6A85;
+    --stage-sky-2:#456478;
   }
 }
 
@@ -412,24 +410,22 @@ input::placeholder{color:var(--muted);font-weight:600}
   0%,100%{transform:translateY(0) rotate(0deg)}
   50%{transform:translateY(-9px) rotate(-1.1deg)}
 }
-.wing{
-  transform-box:view-box;transform-origin:258px 264px;
-  animation:flap var(--flap,3.6s) ease-in-out infinite;
-}
-@keyframes flap{
-  0%,86%,100%{transform:rotate(0deg)}
-  92%{transform:rotate(-13deg) translateY(-3px)}
-}
-.head-group{transform-box:view-box;transform-origin:252px 200px;transition:transform .6s cubic-bezier(.34,1.3,.5,1)}
-.beak{transform-box:view-box;transform-origin:300px 178px;transition:transform .6s cubic-bezier(.34,1.3,.5,1)}
+/* Posture d'ensemble : le corps est d'une seule pièce, c'est donc
+   lui qui s'affaisse ou se redresse selon l'humeur. */
+.tilt{transform-box:view-box;transform-origin:204px 344px;
+  transition:transform .7s cubic-bezier(.34,1.3,.5,1)}
+.beak{transform-box:view-box;transform-origin:274px 240px;
+  transition:transform .6s cubic-bezier(.34,1.3,.5,1)}
 #beakLower{transform-box:view-box;transition:transform .5s cubic-bezier(.34,1.3,.5,1)}
-#mouth{transition:ry .5s ease}
-#lidL,#lidR{transition:cy .5s cubic-bezier(.34,1.3,.5,1)}
-#pupilL,#pupilR{transition:r .5s ease}
+#lid{transition:cy .5s cubic-bezier(.34,1.3,.5,1)}
+#pupil{transition:r .5s ease, cy .5s ease}
+#farEyeBall{transition:ry .5s cubic-bezier(.34,1.3,.5,1)}
+#farGlint{transition:cy .5s ease, r .5s ease}
 .brow{transform-box:view-box;transition:transform .6s cubic-bezier(.34,1.3,.5,1)}
-#browL{transform-origin:227px 108px}
-#browR{transform-origin:280px 114px}
-#blush,#tears,#sparks,#rain,#aura,#eyesHappy,#eyeL,#eyeR{transition:opacity .6s ease}
+#browNear{transform-origin:242px 130px}
+#browFar{transform-origin:142px 136px}
+#blush,#tears,#sparks,#rain,#aura,#eyesHappy,#eyeBig,#farEye{transition:opacity .6s ease}
+#body,#tuft,#lid{transition:fill .6s ease}
 
 .ripple{opacity:0;animation:ripple 4.2s ease-out infinite}
 .r2{animation-delay:2.1s}
@@ -437,7 +433,7 @@ input::placeholder{color:var(--muted);font-weight:600}
   0%{opacity:.75;transform:scale(.35)}
   100%{opacity:0;transform:scale(1.45)}
 }
-.ripple{transform-box:view-box;transform-origin:190px 346px}
+.ripple{transform-box:view-box;transform-origin:200px 346px}
 
 .tear{transform-box:view-box;animation:tearFall 2.4s ease-in infinite}
 .t2{animation-delay:1.2s}
@@ -448,10 +444,9 @@ input::placeholder{color:var(--muted);font-weight:600}
 }
 
 .spark{transform-box:view-box;animation:twinkle 2.6s ease-in-out infinite}
-.s1{transform-origin:112px 140px}
-.s2{transform-origin:340px 113px;animation-delay:.7s}
-.s3{transform-origin:356px 251px;animation-delay:1.3s}
-.s4{transform-origin:55px 249px;animation-delay:1.9s}
+.s1{transform-origin:348px 102px}
+.s2{transform-origin:68px 189px;animation-delay:.8s}
+.s3{transform-origin:358px 296px;animation-delay:1.5s}
 @keyframes twinkle{
   0%,100%{transform:scale(.55) rotate(0deg);opacity:.35}
   50%{transform:scale(1.1) rotate(28deg);opacity:1}
@@ -482,7 +477,6 @@ input::placeholder{color:var(--muted);font-weight:600}
 
 /* ---------- Animations réduites ---------- */
 html[data-motion="reduced"] .float,
-html[data-motion="reduced"] .wing,
 html[data-motion="reduced"] .ripple,
 html[data-motion="reduced"] .tear,
 html[data-motion="reduced"] .spark,
@@ -494,7 +488,7 @@ html[data-motion="reduced"] .tear,
 html[data-motion="reduced"] .drop{opacity:1}
 
 @media (prefers-reduced-motion: reduce){
-  .float,.wing,.ripple,.tear,.spark,.drop,.welcome-duck,.item{animation:none !important}
+  .float,.ripple,.tear,.spark,.drop,.welcome-duck,.item{animation:none !important}
   .ripple{opacity:.4}
   *{transition-duration:.01ms !important}
 }

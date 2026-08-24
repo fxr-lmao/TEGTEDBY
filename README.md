@@ -110,6 +110,20 @@ d'heure saisonnier ne décale jamais un jour.
 
 ---
 
+## Le dessin
+
+Style « autocollant » : aplats de couleur sans le moindre dégradé, contours noirs épais,
+gros œil, corps d'une seule pièce dont la tête fait partie, houppette sur le crâne. Tout
+est en SVG en ligne, manipulé directement par le code.
+
+Deux conséquences de ce parti pris méritent d'être connues :
+
+- La scène reste **claire même en thème sombre**. Un contour noir sur un fond presque
+  noir disparaîtrait, et le canard perdrait son trait.
+- Le canard **n'a pas d'aile dessinée**. Sur un corps-blob dont le visage occupe presque
+  toute la surface, tout arc placé sur le flanc se lit comme une bouche triste — trois
+  formes différentes ont été essayées, aucune n'y échappait.
+
 ## Les expressions
 
 Rien n'est « par palier » : chaque trait est interpolé, le canard change donc de façon
@@ -117,13 +131,19 @@ continue au fil des points.
 
 | Trait | Triste ⟶ Heureux |
 |---|---|
-| Paupières | tombantes ⟶ grandes ouvertes, puis `^ ^` au-delà de 93 |
-| Sourcils | bouts intérieurs relevés ⟶ détendus |
-| Bec | pointe vers le bas ⟶ pointe vers le haut, bouche entrouverte |
-| Tête | affaissée vers l'avant ⟶ redressée |
-| Plumage | terne et désaturé ⟶ vif |
+| Paupière | lourde, à mi-œil ⟶ relevée, puis `^ ^` au-delà de 93 |
+| Regard | pupille contractée et basse ⟶ dilatée |
+| Œil éloigné | écrasé ⟶ grand ouvert |
+| Sourcils | bouts tournés vers le bec relevés ⟶ détendus et remontés |
+| Bec | pointe vers le bas ⟶ vers le haut, puis entrouvert sur l'intérieur |
+| Posture | affaissée vers l'avant ⟶ redressée |
+| Couleurs | plumage délavé et bec éteint ⟶ teintes franches |
 | Flottaison | lente (4,8 s) ⟶ vive (2,1 s) |
-| Décor | nuage de pluie ⟶ rougeurs, halo, étincelles |
+| Décor | nuage de pluie et larmes ⟶ rougeurs, halo, étincelles |
+
+La paupière s'arrête volontairement au milieu de l'œil : plus bas, elle masquerait la
+pupille et ne laisserait qu'un croissant blanc, qui se lit comme un œil révulsé plutôt
+que comme un œil fatigué.
 
 Les paliers nommés (Abattu, Triste, Morose, Neutre, Content, Joyeux, Radieux) ne servent
 qu'au texte affiché.

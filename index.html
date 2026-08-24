@@ -22,9 +22,13 @@
 <header class="topbar">
   <div class="brand">
     <svg viewBox="0 0 32 32" aria-hidden="true" class="brand-mark">
-      <circle cx="16" cy="16" r="15" fill="#FFC93C"/>
-      <circle cx="13" cy="13" r="3.2" fill="#2B2119"/>
-      <path d="M19 15 L30 17 L19 20 Z" fill="#F0821E"/>
+      <g stroke="#1C1713" stroke-width="2" stroke-linejoin="round">
+        <path d="M15.5 3 C21 3 25 7.5 25 13 C25 19 21 23 15.5 23 C10 23 6.5 19 6.5 13.5 C6.5 7.5 10 3 15.5 3 Z" fill="#FFC93C"/>
+        <circle cx="18" cy="11.5" r="4.6" fill="#fff"/>
+        <path d="M22.5 14 C22.5 11.5 25.5 10 28 11.5 C29 12 29 14 28 15 C25.5 16.5 22.5 16 22.5 14 Z" fill="#FF9E1B"/>
+      </g>
+      <circle cx="19" cy="12.5" r="2.6" fill="#1C1713"/>
+      <circle cx="20.3" cy="11.2" r="0.9" fill="#fff"/>
     </svg>
     <span>Canardo</span>
   </div>
@@ -45,133 +49,108 @@
         <desc id="duckDesc">L'expression du canard reflète votre progression du moment.</desc>
 
         <defs>
-          <radialGradient id="gBody" cx="34%" cy="26%" r="78%">
-            <stop offset="0%" stop-color="var(--duck-light)"/>
-            <stop offset="72%" stop-color="var(--duck-base)"/>
-            <stop offset="100%" stop-color="var(--duck-dark)"/>
-          </radialGradient>
-          <linearGradient id="gWing" x1="0.2" y1="0" x2="0.5" y2="1">
-            <stop offset="0%" stop-color="var(--duck-base)"/>
-            <stop offset="100%" stop-color="var(--duck-dark)"/>
-          </linearGradient>
-          <linearGradient id="gBeak" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFB03B"/>
-            <stop offset="100%" stop-color="#EF7C15"/>
-          </linearGradient>
-          <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--pond-top)"/>
-            <stop offset="100%" stop-color="var(--pond-bottom)"/>
-          </linearGradient>
+          <clipPath id="clipEye"><circle cx="240" cy="196" r="43"/></clipPath>
           <radialGradient id="gAura" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="var(--duck-base)" stop-opacity=".55"/>
             <stop offset="100%" stop-color="var(--duck-base)" stop-opacity="0"/>
           </radialGradient>
-          <clipPath id="clipEyeL"><ellipse cx="226" cy="140" rx="17" ry="18"/></clipPath>
-          <clipPath id="clipEyeR"><ellipse cx="280" cy="146" rx="14" ry="15"/></clipPath>
         </defs>
 
         <!-- halo de bonheur -->
-        <circle id="aura" cx="200" cy="230" r="180" fill="url(#gAura)" opacity="0"/>
+        <circle id="aura" cx="204" cy="236" r="176" fill="url(#gAura)" opacity="0"/>
 
         <!-- petit nuage de pluie (humeur basse) -->
         <g id="rain" opacity="0">
-          <path d="M60 78 a26 26 0 0 1 50-9 a22 22 0 0 1 40 12 a20 20 0 0 1-6 39 H74 a22 22 0 0 1-14-42 Z" fill="var(--cloud)"/>
-          <g fill="var(--pond-top)">
-            <path class="drop d1" d="M84 124 q6 10 0 14 q-6-4 0-14 Z"/>
-            <path class="drop d2" d="M112 124 q6 10 0 14 q-6-4 0-14 Z"/>
-            <path class="drop d3" d="M140 124 q6 10 0 14 q-6-4 0-14 Z"/>
+          <path d="M40 52 a24 24 0 0 1 46-8 a20 20 0 0 1 37 11 a18 18 0 0 1-6 36 H53 a20 20 0 0 1-13-39 Z"
+                fill="var(--cloud)" stroke="var(--ink-line)" stroke-width="7" stroke-linejoin="round"/>
+          <g fill="var(--pond)" stroke="var(--ink-line)" stroke-width="4" stroke-linejoin="round">
+            <path class="drop d1" d="M62 98 q6 10 0 13 q-6-3 0-13 Z"/>
+            <path class="drop d2" d="M88 98 q6 10 0 13 q-6-3 0-13 Z"/>
+            <path class="drop d3" d="M114 98 q6 10 0 13 q-6-3 0-13 Z"/>
           </g>
         </g>
 
         <!-- étincelles (humeur haute) -->
-        <g id="sparks" opacity="0" fill="var(--spark)">
-          <path class="spark s1" d="M96 118 l6 16 16 6 -16 6 -6 16 -6-16 -16-6 16-6 Z"/>
-          <path class="spark s2" d="M336 96 l4.5 12 12 4.5 -12 4.5 -4.5 12 -4.5-12 -12-4.5 12-4.5 Z"/>
-          <path class="spark s3" d="M352 236 l4 11 11 4 -11 4 -4 11 -4-11 -11-4 11-4 Z"/>
-          <path class="spark s4" d="M52 236 l3.5 9 9 3.5 -9 3.5 -3.5 9 -3.5-9 -9-3.5 9-3.5 Z"/>
+        <g id="sparks" opacity="0" fill="var(--spark)" stroke="var(--ink-line)" stroke-width="4" stroke-linejoin="round">
+          <path class="spark s1" d="M340 74 l10 24 24 10 -24 10 -10 24 -10-24 -24-10 24-10 Z"/>
+          <path class="spark s2" d="M62 168 l7.5 18 18 7.5 -18 7.5 -7.5 18 -7.5-18 -18-7.5 18-7.5 Z"/>
+          <path class="spark s3" d="M352 274 l8 19 19 8 -19 8 -8 19 -8-19 -19-8 19-8 Z"/>
         </g>
 
-        <!-- le canard flottant -->
+        <!-- le canard -->
         <g id="float" class="float">
-          <!-- queue -->
-          <path d="M104 232 C70 210 44 199 28 208 C43 224 43 245 30 259 C51 270 84 264 110 274 Z" fill="url(#gBody)"/>
-          <!-- corps -->
-          <ellipse cx="190" cy="278" rx="122" ry="84" fill="url(#gBody)"/>
-          <!-- aile -->
-          <g id="wing" class="wing">
-            <path d="M264 266 C250 238 202 226 158 242 C122 256 100 280 92 300
-                     C132 294 156 298 190 298 C232 298 256 288 264 266 Z"
-                  fill="url(#gWing)" stroke="var(--duck-dark)" stroke-width="2.5"
-                  stroke-linejoin="round" opacity=".9"/>
-            <path d="M104 295 C132 288 158 288 180 291" fill="none" stroke="var(--duck-dark)"
-                  stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
-            <path d="M118 284 C142 277 164 277 184 281" fill="none" stroke="var(--duck-dark)"
-                  stroke-width="2.5" stroke-linecap="round" opacity=".32"/>
-          </g>
+          <g id="tilt" class="tilt">
 
-          <!-- tête + visage -->
-          <g id="headGroup" class="head-group">
-            <circle cx="252" cy="152" r="72" fill="url(#gBody)"/>
+            <!-- corps : une seule forme, tête comprise -->
+            <path id="body" d="M204 98 C268 98 318 152 322 222 C326 292 290 352 218 362
+                               C144 372 88 318 86 244 C84 164 138 98 204 98 Z"
+                  fill="var(--duck-base)" stroke="var(--ink-line)" stroke-width="11" stroke-linejoin="round"/>
+
+            <!-- houppette -->
+            <path id="tuft" d="M196 100 C200 76 224 66 236 78 C227 86 224 94 232 102"
+                  fill="var(--duck-base)" stroke="var(--ink-line)" stroke-width="11"
+                  stroke-linejoin="round" stroke-linecap="round"/>
 
             <!-- rougeurs -->
             <g id="blush" opacity="0" fill="var(--blush)">
-              <ellipse cx="212" cy="172" rx="17" ry="10"/>
-              <ellipse cx="296" cy="176" rx="13" ry="8"/>
+              <ellipse cx="214" cy="266" rx="25" ry="14"/>
+              <ellipse cx="124" cy="234" rx="16" ry="10"/>
             </g>
 
-            <!-- sourcils -->
-            <path id="browL" class="brow" d="M208 110 Q227 101 246 110" fill="none" stroke="var(--ink-duck)" stroke-width="5.5" stroke-linecap="round"/>
-            <path id="browR" class="brow" d="M264 116 Q280 108 296 116" fill="none" stroke="var(--ink-duck)" stroke-width="4.5" stroke-linecap="round"/>
-
-            <!-- oeil gauche -->
-            <g id="eyeL">
-              <ellipse cx="226" cy="140" rx="17" ry="18" fill="#FFFFFF"/>
-              <circle id="pupilL" cx="228" cy="142" r="8" fill="var(--ink-duck)"/>
-              <circle cx="232" cy="137" r="3.2" fill="#FFFFFF"/>
-              <g clip-path="url(#clipEyeL)">
-                <ellipse id="lidL" cx="226" cy="106" rx="20" ry="20" fill="url(#gBody)"/>
-              </g>
-            </g>
-            <!-- oeil droit -->
-            <g id="eyeR">
-              <ellipse cx="280" cy="146" rx="14" ry="15" fill="#FFFFFF"/>
-              <circle id="pupilR" cx="282" cy="148" r="6.8" fill="var(--ink-duck)"/>
-              <circle cx="285" cy="143" r="2.6" fill="#FFFFFF"/>
-              <g clip-path="url(#clipEyeR)">
-                <ellipse id="lidR" cx="280" cy="114" rx="17" ry="17" fill="url(#gBody)"/>
-              </g>
-            </g>
-
-            <!-- yeux "^ ^" de joie extrême -->
-            <g id="eyesHappy" opacity="0" fill="none" stroke="var(--ink-duck)" stroke-width="6" stroke-linecap="round">
-              <path d="M212 146 Q226 128 240 146"/>
-              <path d="M269 152 Q280 137 291 152"/>
-            </g>
-
-            <!-- larmes -->
-            <g id="tears" opacity="0" fill="var(--tear)">
-              <path class="tear t1" d="M220 158 q7 13 0 18 q-7-5 0-18 Z"/>
-              <path class="tear t2" d="M276 164 q6 11 0 15 q-6-4 0-15 Z"/>
+            <!-- oeil éloigné (vu de trois quarts) -->
+            <g id="farEye">
+              <ellipse id="farEyeBall" cx="140" cy="190" rx="20" ry="28" fill="var(--ink-line)"/>
+              <circle id="farGlint" cx="134" cy="176" r="6" fill="#FFFFFF"/>
             </g>
 
             <!-- bec -->
             <g id="beak" class="beak">
-              <!-- Intérieur du bec : même tracé que la mandibule inférieure.
-                   Elle glisse vers le bas, ce qu'elle libère est donc rempli
-                   exactement, et rien ne dépasse quand le bec est fermé. -->
-              <path id="mouth" d="M298 183 L375 178 C361 195 329 200 298 193 Z" fill="#B8433A"/>
-              <path id="beakUpper" d="M298 158 C330 150 362 159 375 178 L298 183 Z" fill="url(#gBeak)"/>
-              <path id="beakLower" d="M298 183 L375 178 C361 195 329 200 298 193 Z" fill="#E0710F"/>
-              <circle cx="322" cy="167" r="3.4" fill="#A9530A" opacity=".7"/>
+              <path id="mouth" d="M272 240 C272 266 308 280 342 276 C370 272 386 257 384 238 Z" fill="#B8433A"/>
+              <path id="beakUpper" d="M272 240 C272 210 308 196 342 200 C370 204 386 219 384 238 Z"
+                    fill="var(--beak)" stroke="var(--ink-line)" stroke-width="9" stroke-linejoin="round"/>
+              <path id="beakLower" d="M272 240 C272 266 308 280 342 276 C370 272 386 257 384 238 Z"
+                    fill="var(--beak-dark)" stroke="var(--ink-line)" stroke-width="9" stroke-linejoin="round"/>
+              <path d="M302 216 C322 208 348 209 366 218" fill="none" stroke="var(--beak-line)"
+                    stroke-width="5" stroke-linecap="round" opacity=".55"/>
             </g>
+
+            <!-- grand oeil -->
+            <g id="eyeBig">
+              <circle cx="240" cy="196" r="48" fill="#FFFFFF" stroke="var(--ink-line)" stroke-width="9"/>
+              <circle id="pupil" cx="245" cy="201" r="28" fill="var(--ink-line)"/>
+              <circle id="glint" cx="260" cy="182" r="9.5" fill="#FFFFFF"/>
+              <g clip-path="url(#clipEye)">
+                <circle id="lid" cx="240" cy="93" r="60"
+                        fill="var(--duck-base)" stroke="var(--ink-line)" stroke-width="8"/>
+              </g>
+            </g>
+
+            <!-- yeux « ^ ^ » de joie extrême -->
+            <g id="eyesHappy" opacity="0" fill="none" stroke="var(--ink-line)" stroke-linecap="round">
+              <path d="M208 208 Q240 172 272 208" stroke-width="10"/>
+              <path d="M124 202 Q140 182 156 202" stroke-width="7"/>
+            </g>
+
+            <!-- sourcils -->
+            <path id="browNear" class="brow" d="M208 132 Q242 117 276 132" fill="none"
+                  stroke="var(--ink-line)" stroke-width="9" stroke-linecap="round"/>
+            <path id="browFar" class="brow" d="M124 140 Q142 130 160 140" fill="none"
+                  stroke="var(--ink-line)" stroke-width="7" stroke-linecap="round"/>
+
+            <!-- larmes -->
+            <g id="tears" opacity="0" fill="var(--tear)" stroke="var(--ink-line)" stroke-width="4" stroke-linejoin="round">
+              <path class="tear t1" d="M236 250 q10 17 0 23 q-10-6 0-23 Z"/>
+              <path class="tear t2" d="M136 222 q8 14 0 19 q-8-5 0-19 Z"/>
+            </g>
+
           </g>
         </g>
 
         <!-- eau -->
         <g id="pond">
-          <ellipse cx="190" cy="346" rx="178" ry="30" fill="url(#gWater)"/>
-          <ellipse class="ripple r1" cx="190" cy="346" rx="120" ry="20" fill="none" stroke="var(--ripple)" stroke-width="3"/>
-          <ellipse class="ripple r2" cx="190" cy="346" rx="120" ry="20" fill="none" stroke="var(--ripple)" stroke-width="3"/>
+          <ellipse cx="200" cy="346" rx="184" ry="30" fill="var(--pond)"/>
+          <ellipse class="ripple r1" cx="200" cy="346" rx="120" ry="19" fill="none" stroke="var(--ripple)" stroke-width="6"/>
+          <ellipse class="ripple r2" cx="200" cy="346" rx="120" ry="19" fill="none" stroke="var(--ripple)" stroke-width="6"/>
         </g>
 
         <!-- coeurs (caresses) -->

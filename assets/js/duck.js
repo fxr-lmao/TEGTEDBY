@@ -1,9 +1,12 @@
 /* =========================================================
    Canardo — rendu du canard
+   Style « autocollant » : aplats de couleur, contours noirs
+   épais, gros oeil, corps d'une seule pièce.
+
    Traduit une humeur continue (0-100) en expression :
-   paupières, sourcils, bec, rougeurs, larmes, couleur,
-   rythme de flottaison. Rien n'est « par palier » : tout
-   est interpolé, le canard change donc à vue d'oeil.
+   paupière, sourcils, bec, posture, teinte du plumage.
+   Rien n'est « par palier » : tout est interpolé, le canard
+   change donc à vue d'oeil.
    ========================================================= */
 (function (global) {
   'use strict';
@@ -11,6 +14,16 @@
   var el = {};
   var mounted = false;
   var lastMood = null;
+
+  /* Repères géométriques du tracé (voir index.html). */
+  var EYE_CY   = 196;   // centre du grand oeil
+  var EYE_CLIP = 43;    // rayon de la zone blanche
+  var LID_R    = 60;    // rayon du disque servant de paupière
+  var LID_SPAN = 52;    // course de la paupière : elle s'arrête au milieu
+                        // de l'oeil. Descendre plus bas masquerait la
+                        // pupille et ne laisserait qu'un croissant blanc,
+                        // qui se lit comme un oeil révulsé, pas comme un
+                        // oeil fatigué.
 
   function $(id) { return document.getElementById(id); }
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -40,28 +53,26 @@
 
   /* ---------------- montage ---------------- */
   function mount() {
-    el.svg        = $('duck');
+    el.svg = $('duck');
     if (!el.svg) return false;
-    el.headGroup  = $('headGroup');
-    el.beak       = $('beak');
-    el.beakLower  = $('beakLower');
-    el.mouth      = $('mouth');
-    el.lidL       = $('lidL');
-    el.lidR       = $('lidR');
-    el.pupilL     = $('pupilL');
-    el.pupilR     = $('pupilR');
-    el.eyeL       = $('eyeL');
-    el.eyeR       = $('eyeR');
-    el.eyesHappy  = $('eyesHappy');
-    el.browL      = $('browL');
-    el.browR      = $('browR');
-    el.blush      = $('blush');
-    el.tears      = $('tears');
-    el.sparks     = $('sparks');
-    el.rain       = $('rain');
-    el.aura       = $('aura');
-    el.float      = $('float');
-    el.hearts     = $('hearts');
+    el.tilt      = $('tilt');
+    el.beak      = $('beak');
+    el.beakLower = $('beakLower');
+    el.lid       = $('lid');
+    el.pupil     = $('pupil');
+    el.farGlint  = $('farGlint');
+    el.eyeBig    = $('eyeBig');
+    el.farEye    = $('farEye');
+    el.farEyeBall= $('farEyeBall');
+    el.eyesHappy = $('eyesHappy');
+    el.browNear  = $('browNear');
+    el.browFar   = $('browFar');
+    el.blush     = $('blush');
+    el.tears     = $('tears');
+    el.sparks    = $('sparks');
+    el.rain      = $('rain');
+    el.aura      = $('aura');
+    el.hearts    = $('hearts');
     mounted = true;
     return true;
   }
@@ -74,59 +85,76 @@
     var h = m / 100;
     lastMood = m;
 
-    /* --- couleur : plus l'humeur baisse, plus le plumage se ternit --- */
+    /* --- plumage : aplat unique, qui se ternit quand ça va mal --- */
     var hsl = hexToHsl(color || '#FFC93C');
-    var satFactor = lerp(0.30, 1, h);
-    var s = hsl.s * satFactor;
-    var l = hsl.l * lerp(0.86, 1, h);
-    el.svg.style.setProperty('--duck-base',  hslCss(hsl.h, s, l));
-    el.svg.style.setProperty('--duck-light', hslCss(hsl.h, s * 0.9, l + 14));
-    el.svg.style.setProperty('--duck-dark',  hslCss(hsl.h, Math.min(100, s * 1.05), l - 16));
+    var s = hsl.s * lerp(0.13, 1, h);
+    var l = hsl.l * lerp(0.9, 1, h);
+    el.svg.style.setProperty('--duck-base', hslCss(hsl.h, s, l));
 
-    /* --- paupières : tombantes quand ça va mal --- */
-    var open = lerp(0.42, 1, h);
-    el.lidL.setAttribute('cy', (106 + (1 - open) * 32).toFixed(1));
-    el.lidR.setAttribute('cy', (114 + (1 - open) * 30).toFixed(1));
+    // Le bec se ternit aussi, mais deux fois moins : il reste le point
+    // de couleur du dessin, sans jurer avec un corps délavé.
+    var bs = lerp(0.45, 1, h);
+    el.svg.style.setProperty('--beak',      hslCss(33, 100 * bs, lerp(64, 55, h)));
+    el.svg.style.setProperty('--beak-dark', hslCss(28, 94 * bs,  lerp(58, 50, h)));
+    el.svg.style.setProperty('--beak-line', hslCss(26, 88 * bs,  lerp(46, 38, h)));
 
-    /* --- pupilles : dilatées de bonheur --- */
-    el.pupilL.setAttribute('r', lerp(6.8, 8.6, h).toFixed(2));
-    el.pupilR.setAttribute('r', lerp(5.8, 7.3, h).toFixed(2));
+    /* --- paupière : le disque descend sur le blanc de l'oeil.
+           La plage dépasse 1 volontairement puis est bornée : dès une
+           humeur correcte l'oeil est franchement ouvert, sinon la
+           paupière et le sourcil forment deux arcs noirs qui donnent
+           un air fâché au lieu d'un air neutre. --- */
+    var open = clamp01(lerp(0.18, 1.3, h));
+    var lidTop = EYE_CY - EYE_CLIP - LID_R;          // entièrement relevée
+    el.lid.setAttribute('cy', (lidTop + (1 - open) * LID_SPAN).toFixed(1));
+
+    /* --- pupille : dilatée de bonheur, et le regard tombe quand ça va mal --- */
+    el.pupil.setAttribute('r', lerp(23, 30, h).toFixed(2));
+    el.pupil.setAttribute('cy', lerp(207, 201, h).toFixed(1));
+
+    /* --- oeil éloigné : il se ferme au même rythme. Le reflet suit
+           la paupière, sinon il reste suspendu sur le corps. --- */
+    var farRy = lerp(9, 28, h);
+    el.farEyeBall.setAttribute('ry', farRy.toFixed(1));
+    el.farGlint.setAttribute('cy', (190 - farRy * 0.42).toFixed(1));
+    el.farGlint.setAttribute('r', lerp(2.6, 6, h).toFixed(1));
 
     /* --- yeux « ^ ^ » au sommet de la joie --- */
     var joy = m >= 93 ? 1 : 0;
     el.eyesHappy.setAttribute('opacity', joy);
-    el.eyeL.setAttribute('opacity', 1 - joy);
-    el.eyeR.setAttribute('opacity', 1 - joy);
+    el.eyeBig.setAttribute('opacity', 1 - joy);
+    el.farEye.setAttribute('opacity', 1 - joy);
 
-    /* --- sourcils : bouts intérieurs relevés = tristesse.
+    /* --- sourcils : bouts tournés vers le bec relevés = tristesse.
            On reste toujours >= 0 : des bouts intérieurs abaissés
            donneraient un air fâché, pas joyeux. --- */
-    var brow = lerp(16, 2, h);
-    var browY = lerp(4, -6, h);
-    el.browL.style.transform = 'translateY(' + browY.toFixed(1) + 'px) rotate(' + (-brow).toFixed(1) + 'deg)';
-    el.browR.style.transform = 'translateY(' + browY.toFixed(1) + 'px) rotate(' + brow.toFixed(1) + 'deg)';
+    var brow = lerp(17, 2, h);
+    var browY = lerp(5, -7, h);
+    el.browNear.style.transform = 'translateY(' + browY.toFixed(1) + 'px) rotate(' + (-brow).toFixed(1) + 'deg)';
+    el.browFar.style.transform  = 'translateY(' + browY.toFixed(1) + 'px) rotate(' + (-brow * 0.8).toFixed(1) + 'deg)';
 
-    /* --- tête : elle s'affaisse vers l'avant quand le moral tombe --- */
-    el.headGroup.style.transform = 'rotate(' + lerp(7, -4, h).toFixed(1) + 'deg)';
+    /* --- posture : il s'affaisse vers l'avant, ou se redresse --- */
+    el.tilt.style.transform = 'rotate(' + lerp(7, -5, h).toFixed(1) + 'deg)';
 
     /* --- bec : pointe relevée = sourire, abaissée = moue --- */
     var smile = h * 2 - 1;                       // -1 → 1
-    el.beak.style.transform = 'rotate(' + (-smile * 11).toFixed(1) + 'deg)';
+    el.beak.style.transform = 'rotate(' + (-smile * 12).toFixed(1) + 'deg)';
+
     // Il cancane de joie : la mandibule inférieure descend et découvre
     // l'intérieur du bec, qui a exactement la même forme.
-    var openBeak = clamp01((m - 72) / 28) * 9;
+    // 20 px et non 11 : les deux traits noirs de 9 px se rejoignent
+    // sinon presque, et il ne reste qu'un filet rouge illisible.
+    var openBeak = clamp01((m - 72) / 28) * 20;
     el.beakLower.style.transform = 'translateY(' + openBeak.toFixed(1) + 'px)';
 
     /* --- accessoires d'humeur --- */
-    el.blush.setAttribute('opacity', (clamp01((m - 52) / 48) * 0.85).toFixed(2));
+    el.blush.setAttribute('opacity', (clamp01((m - 52) / 48) * 0.9).toFixed(2));
     el.tears.setAttribute('opacity', clamp01((28 - m) / 28).toFixed(2));
     el.sparks.setAttribute('opacity', clamp01((m - 84) / 16).toFixed(2));
     el.rain.setAttribute('opacity', clamp01((17 - m) / 17).toFixed(2));
-    el.aura.setAttribute('opacity', (clamp01((m - 70) / 30) * 0.8).toFixed(2));
+    el.aura.setAttribute('opacity', (clamp01((m - 70) / 30) * 0.75).toFixed(2));
 
     /* --- rythme : il s'anime d'autant plus qu'il est heureux --- */
     el.svg.style.setProperty('--bob', lerp(4.8, 2.1, h).toFixed(2) + 's');
-    el.svg.style.setProperty('--flap', lerp(7, 2.2, h).toFixed(2) + 's');
   }
 
   /* ---------------- caresse ---------------- */
@@ -139,18 +167,20 @@
     el.svg.classList.add('is-petted');
     setTimeout(function () { el.svg.classList.remove('is-petted'); }, 520);
 
-    var count = 3;
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < 3; i++) {
       (function (idx) {
         setTimeout(function () {
           if (!el.hearts) return;
           var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           var x = 170 + Math.random() * 110;
           var y = 150 + Math.random() * 50;
-          var scale = 0.8 + Math.random() * 0.7;
+          var scale = 0.9 + Math.random() * 0.8;
           p.setAttribute('d', HEART);
           p.setAttribute('class', 'heart');
           p.setAttribute('fill', 'var(--blush)');
+          p.setAttribute('stroke', 'var(--ink-line)');
+          p.setAttribute('stroke-width', '3');
+          p.setAttribute('stroke-linejoin', 'round');
           p.setAttribute('transform', 'translate(' + x.toFixed(0) + ',' + y.toFixed(0) + ') scale(' + scale.toFixed(2) + ')');
           el.hearts.appendChild(p);
           setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 1450);
